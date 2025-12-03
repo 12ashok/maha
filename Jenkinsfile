@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -20,6 +21,14 @@ pipeline {
             steps {
                 // Build Docker image using the Dockerfile
                 sh 'docker build -t webpage:0.0.1 .'
+            }
+        }
+        stage('cleanup all containers') {
+            steps {
+                // Remove all containers (running or stopped)
+                sh '''
+                   docker ps -aq | xargs -r docker rm -f
+                '''
             }
         }
 
