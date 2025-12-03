@@ -35,7 +35,13 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 // Optional: run container for testing
-                sh 'docker run -d -p 9090:8080 -e SPRING_PROFILES_ACTIVE=prod --name myapp-container webpage:0.0.1 --spring.profiles.active=default'
+                sh '''
+                   docker run -d \
+                     - p 80:80 \
+                     -e SPRING_PROFILES_ACTIVE=prod \
+                     --name myapp-container \
+                     maha-apache
+                '''
             }
         }
     }
