@@ -29,14 +29,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 sh '''
-                    docker rm -f myapp-container || true
-                    docker run -d -p 80:80 --name myapp-container webpage:0.0.1
-                   // echo "DEBUG: starting docker run"
-                  // docker run -d \
-                   //  -p 80:80 \
-                    // -e SPRING_PROFILES_ACTIVE=prod \
-                    // --name myapp-container \
-                    // webpage:0.0.1
+                   
                 '''
             }
         }
