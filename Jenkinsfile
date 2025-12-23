@@ -29,6 +29,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 sh '''
+                   echo "DEBUG: starting docker run"
                    docker run -d \
                      -p 80:80 \
                      -e SPRING_PROFILES_ACTIVE=prod \
