@@ -38,8 +38,8 @@ pipeline {
                 sh '''
                    docker run -d \
                      - p 80:80 \
-                     -e SPRING_PROFILES_ACTIVE=prod \
-                     --name myapp-container \
+                     -e SPRING_PROFILES_ACTIVE=prod 
+                     --name myapp-container 
                      maha-apache
                 '''
             }
