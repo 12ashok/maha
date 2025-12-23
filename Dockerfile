@@ -1,9 +1,14 @@
-# Stage 1: Build the Spring Boot app
-FROM eclipse-temurin:21-jdk AS builder
-WORKDIR /app
-COPY target/maha-0.0.1-SNAPSHOT.jar app.jar
+# ---------- STAGE 1: Build the JAR ----------
+FROM maven:3.9.9-eclipse-temurin-21 AS builder
 
-# Stage 2: Runtime with Apache2 + Spring Boot
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# ---------- STAGE 2: Runtime ----------
 FROM ubuntu:22.04
 
 # Install Apache2 and Java
@@ -16,16 +21,14 @@ RUN a2enmod proxy proxy_http
 
 # Configure Apache to proxy requests to Spring Boot
 RUN echo '<VirtualHost *:80>\n\
-    ProxyPreserveHost On\n\
-    ProxyPass / http://localhost:8080/\n\
-    ProxyPassReverse / http://localhost:8080/\n\
+ProxyPreserveHost On\n\
+ProxyPass / http://localhost:8080/\n\
+ProxyPassReverse / http://localhost:8080/\n\
 </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /app
-COPY --from=builder /app/app.jar app.jar
+COPY --from=builder /app/target/*.jar app.jar
 
-# Expose Apache port
 EXPOSE 80
 
-# Start both services: Spring Boot + Apache
 CMD java -jar /app/app.jar & apache2ctl -D FOREGROUND
